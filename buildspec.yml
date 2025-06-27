@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 16
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
@@ -12,12 +12,14 @@ phases:
       - echo Build started on `date`
       - npm install
       - echo npm install completed on `date`
+      # 用 NODE_OPTIONS 强制指定 legacy openssl provider（防止 Angular 7 报错）
       - NODE_OPTIONS=--openssl-legacy-provider npm run build
       - echo npm run build completed on `date`
   post_build:
     commands:
       - echo Build completed on `date`
       - ls -l ./dist/shop/
+
 artifacts:
   files:
     - ./dist/shop/*
