@@ -10,6 +10,7 @@ phases:
 
   build:
     commands:
+      - export NODE_OPTIONS=--openssl-legacy-provider
       - echo Build started on `date`
       - npm run build -- --project=shop
       - echo Build completed on `date`
