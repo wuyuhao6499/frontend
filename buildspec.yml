@@ -8,12 +8,17 @@ phases:
       - echo Installing dependencies...
       - npm ci
 
+  pre_build:
+    commands:
+      - echo Enabling OpenSSL legacy provider...
+      - export NODE_OPTIONS=--openssl-legacy-provider
+
   build:
     commands:
-      - echo Setting legacy OpenSSL provider...
-      - export NODE_OPTIONS=--openssl-legacy-provider
       - echo Building Angular project...
       - npm run build -- --project=shop
+      - echo Listing dist/shop contents...
+      - ls -al dist/shop || echo "dist/shop missing!"
 
 artifacts:
   files:
