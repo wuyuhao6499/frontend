@@ -5,13 +5,10 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo Installing dependencies...
       - npm install
   build:
     commands:
-      - echo Building Angular App...
       - NODE_OPTIONS=--openssl-legacy-provider ng build --project=shop
-      - ls -al dist/shop || echo "❌ Build failed or output not found"
 artifacts:
   files:
     - '**/*'
