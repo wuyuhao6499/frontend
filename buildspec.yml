@@ -8,20 +8,11 @@ phases:
       - echo Installing dependencies...
       - npm ci
 
-  pre_build:
-    commands:
-      - echo Nothing to do in pre_build
-
   build:
     commands:
       - echo Build started on `date`
       - npm run build -- --project=shop
-      - echo Build finished on `date`
-
-  post_build:
-    commands:
-      - echo Post build actions
-      - ls -alh dist/shop
+      - echo Build completed on `date`
 
 artifacts:
   files:
