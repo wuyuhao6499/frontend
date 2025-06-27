@@ -2,13 +2,20 @@ version: 0.0
 os: linux
 
 files:
-  # 把 artifact 根（也就是 build 的 dist/shop 下文件）复制到 /var/www/html
   - source: .
     destination: /var/www/html
 
+# 如果不需要钩子，可以把下面 hooks 段去掉或留空
 hooks:
-  # 如果你不需要任何钩子，这一段可以省略或留空
-  # AfterInstall:
-  #   - location: scripts/your-post-install.sh
-  #     timeout: 300
-  #     runas: root
+  BeforeInstall:
+    - location: scripts/cleanup.sh    # （可选）清理旧文件脚本
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/set-perms.sh   # （可选）设置目录权限脚本
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/restart-nginx.sh  # （可选）重启服务脚本
+      timeout: 300
+      runas: root
