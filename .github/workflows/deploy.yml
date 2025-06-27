@@ -2,44 +2,46 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup SSH Key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.KEY }}" > ~/.ssh/deploy_key.pem
-        chmod 600 ~/.ssh/deploy_key.pem
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.KEY }}" > ~/.ssh/deploy_key.pem
+          chmod 600 ~/.ssh/deploy_key.pem
 
-    - name: Add EC2 to known_hosts
-      run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      - name: Add EC2 host to known_hosts
+        run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
-    - name: Deploy to EC2
-      run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
-          cd /home/ec2-user/frontend || {
-            echo "No repo found. Cloning fresh..."
-            git clone https://github.com/wuyuhao6499/frontend.git
-            cd frontend
-          }
+      - name: Build & Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+            cd /home/ec2-user/frontend
 
-          git config --global --add safe.directory /home/ec2-user/frontend
-          git pull origin main
+            # —— 保证用 Node.js 14 或 16 —— 
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install 14    # 或者 nvm install 16
+            nvm use 14
 
-          npm install || {
-            echo "npm install failed. Trying clean install..."
-            rm -rf node_modules package-lock.json
+            echo "Installing deps..."
             npm install
-          }
 
-          npm run build
-          sudo mkdir -p /var/www/html
-          sudo cp -r dist/shop/* /var/www/html/
-        EOF
+            echo "Building Angular (Legacy OpenSSL)..."
+            NODE_OPTIONS=--openssl-legacy-provider npm run build || exit 1
+
+            echo "Copy to web root..."
+            sudo mkdir -p /var/www/html
+            sudo cp -r dist/shop/* /var/www/html/
+
+            echo "🚀 Deployed successfully!"
+          EOF
