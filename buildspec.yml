@@ -3,24 +3,22 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 16  # 👈 强制使用 Node.js 16
+      nodejs: 16
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      - echo Nothing to do in pre_build...
   build:
     commands:
       - echo Build started on `date`
       - npm install
-      - echo npm install completed on `date`
-      - npm run build  # 👈 不需要 NODE_OPTIONS 了（Node 16 不会报错）
-      - echo npm run build completed on `date`
+      - npm run build -- --project=shop
+      - echo Build completed on `date`
   post_build:
     commands:
-      - echo Build completed on `date`
-      - ls -l ./dist/shop/
+      - echo Post build contents:
+      - ls -R dist/shop
 
 artifacts:
   files:
-    - ./dist/shop/*
-    - ./dist/shop/assets/*
-    - appspec.yml
+    - appspec.yml           # ← 根目录下的 appspec.yml
+    - dist/shop/**/*        # ← dist/shop 里的所有文件
