@@ -18,4 +18,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: dist/shop
+  base-directory: dist/shop   # 若 outputPath 不一致，请改成正确路径
