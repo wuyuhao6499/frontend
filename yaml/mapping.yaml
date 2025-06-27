@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: VPC + 子网（1a和1c） + IGW，使用Parameter+Mapping的组合模板
+
+Parameters:
+  envName:
+    Type: String
+    Description: 部署环境
+    AllowedValues:
+      - dev
+      - stg
+      - prd
+
+Mappings:
+  cidr:
+    dev:
+      vpc: 10.0.0.0/16
+      subnet1a: 10.0.0.0/24
+      subnet1c: 10.0.1.0/24
+    stg:
+      vpc: 10.1.0.0/16
+      subnet1a: 10.1.0.0/24
+      subnet1c: 10.1.1.0/24
+    prd:
+      vpc: 10.2.0.0/16
+      subnet1a: 10.2.0.0/24
+      subnet1c: 10.2.1.0/24
+
+Resources:
+
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 
+        Fn::FindInMap: 
+          - cidr
+          - !Ref envName
+          - vpc
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub "${envName}-dp-vpc"
+
+  mySubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock:
+        Fn::FindInMap:
+          - cidr
+          - !Ref envName
+          - subnet1a
+      AvailabilityZone: ap-northeast-1a
+      Tags:
+        - Key: Name
+          Value: !Sub "${envName}-subnet-1a"
+
+  mySubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock:
+        Fn::FindInMap:
+          - cidr
+          - !Ref envName
+          - subnet1c
+      AvailabilityZone: ap-northeast-1c
+      Tags:
+        - Key: Name
+          Value: !Sub "${envName}-subnet-1c"
+
+  myIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub "${envName}-igw"
+
+  attachIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref myVPC
+      InternetGatewayId: !Ref myIGW

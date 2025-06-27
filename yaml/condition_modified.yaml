@@ -1,0 +1,76 @@
+Mappings:
+  env:
+    name:
+      "111111111111": dev
+      "325216836291": stg
+      "999999999999": prd
+    dev:
+      vpc: 10.0.0.0/16
+      subnet1a: 10.0.0.0/24
+      subnet1c: 10.0.1.0/24
+    stg:
+      vpc: 10.1.0.0/16
+      subnet1a: 10.1.0.0/24
+      subnet1c: 10.1.1.0/24
+    prd:
+      vpc: 10.2.0.0/16
+      subnet1a: 10.2.0.0/24
+      subnet1c: 10.2.1.0/24
+
+Conditions:
+  IsStgAccount: !Equals
+    - !FindInMap [env, !Ref "AWS::AccountId", name]
+    - stg
+
+Resources:
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock:
+        Fn::FindInMap:
+          - env
+          - Fn::FindInMap:
+              - env
+              - !Ref "AWS::AccountId"
+              - name
+          - vpc
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::AccountId}-vpc"
+
+  mySubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock:
+        Fn::FindInMap:
+          - env
+          - Fn::FindInMap:
+              - env
+              - !Ref "AWS::AccountId"
+              - name
+          - subnet1a
+      AvailabilityZone: !Sub "${AWS::Region}a"
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::AccountId}-subnet1a"
+
+  mySubnet1c:
+    Type: AWS::EC2::Subnet
+    Condition: IsStgAccount
+    Properties:
+      VpcId: !Ref myVPC
+      CidrBlock:
+        Fn::FindInMap:
+          - env
+          - Fn::FindInMap:
+              - env
+              - !Ref "AWS::AccountId"
+              - name
+          - subnet1c
+      AvailabilityZone: !Sub "${AWS::Region}c"
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::AccountId}-subnet1c"

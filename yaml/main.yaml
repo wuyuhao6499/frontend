@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Main stack to deploy network and compute stacks
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, stg, prd]
+  ResourcePrefix:
+    Type: String
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
+  Subnet1Cidr:
+    Type: String
+    Default: 10.0.1.0/24
+  Subnet2Cidr:
+    Type: String
+    Default: 10.0.2.0/24
+
+Resources:
+  NetworkStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://your-bucket/network.yaml
+      Parameters:
+        Environment: !Ref Environment
+        ResourcePrefix: !Ref ResourcePrefix
+        VpcCidr: !Ref VpcCidr
+        Subnet1Cidr: !Ref Subnet1Cidr
+        Subnet2Cidr: !Ref Subnet2Cidr
+
+  ComputeStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://your-bucket/compute.yaml
+      Parameters:
+        Environment: !Ref Environment
+        ResourcePrefix: !Ref ResourcePrefix
+        VpcId: !GetAtt NetworkStack.Outputs.VpcId
+        Subnet1Id: !GetAtt NetworkStack.Outputs.Subnet1Id
+        Subnet2Id: !GetAtt NetworkStack.Outputs.Subnet2Id
