@@ -4,18 +4,3 @@ os: linux
 files:
   - source: .
     destination: /var/www/html
-
-# 如果不需要钩子，可以把下面 hooks 段去掉或留空
-hooks:
-  BeforeInstall:
-    - location: scripts/cleanup.sh    # （可选）清理旧文件脚本
-      timeout: 300
-      runas: root
-  AfterInstall:
-    - location: scripts/set-perms.sh   # （可选）设置目录权限脚本
-      timeout: 300
-      runas: root
-  ApplicationStart:
-    - location: scripts/restart-nginx.sh  # （可选）重启服务脚本
-      timeout: 300
-      runas: root
