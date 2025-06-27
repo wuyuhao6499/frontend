@@ -6,13 +6,13 @@ phases:
       nodejs: 18
     commands:
       - echo Installing dependencies...
-      - npm install
+      - npm ci
   build:
     commands:
-      - echo Building Angular App with legacy OpenSSL support...
-      - NODE_OPTIONS=--openssl-legacy-provider ./node_modules/.bin/ng build --project=shop || exit 1
+      - echo Building Angular App with OpenSSL legacy provider...
+      - NODE_OPTIONS=--openssl-legacy-provider npx ng build --project=shop || exit 1
       - echo Build completed.
-      - ls -al dist/shop || echo "Build failed or output path incorrect!"
+      - ls -al dist/shop || echo "Build output not found!"
 artifacts:
   files:
     - '**/*'
