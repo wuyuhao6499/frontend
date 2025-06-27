@@ -4,23 +4,21 @@ phases:
   install:
     runtime-versions:
       nodejs: 16
-
-  pre_build:
     commands:
-      - echo "Nothing to do in pre_build phase..."
+      - npm install
 
   build:
     commands:
-      - echo "Build started on `date`"
-      - npm install
-      - npm run build
+      - npm run build   # 默认调用 package.json 里的 "build": "ng build --project=shop"
 
   post_build:
     commands:
-      - echo "Build completed on `date`"
-      - ls -l dist/shop/
+      - echo "Build completed on $(date)"
 
 artifacts:
+  # 先把 appspec.yml 放进去
   files:
     - appspec.yml
-    - dist/shop/**/*
+  # 然后把 dist/shop 下的所有文件——平级打包到根目录下
+    - '**/*'
+  base-directory: dist/shop

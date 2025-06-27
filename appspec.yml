@@ -1,10 +1,14 @@
 version: 0.0
 os: linux
+
 files:
-  - source: /
+  # 把 artifact 根（也就是 build 的 dist/shop 下文件）复制到 /var/www/html
+  - source: .
     destination: /var/www/html
+
 hooks:
-  AfterInstall:
-    - location: scripts/start.sh
-      timeout: 300
-      runas: root
+  # 如果你不需要任何钩子，这一段可以省略或留空
+  # AfterInstall:
+  #   - location: scripts/your-post-install.sh
+  #     timeout: 300
+  #     runas: root
