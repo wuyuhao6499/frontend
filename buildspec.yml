@@ -4,12 +4,22 @@ phases:
   install:
     runtime-versions:
       nodejs: 18
+  pre_build:
     commands:
-      - npm install
+      - echo Nothing to do in the pre_build phase...
   build:
     commands:
-      - NODE_OPTIONS=--openssl-legacy-provider ng build --project=shop
+      - echo Build started on `date`
+      - npm install
+      - echo npm install completed on `date`
+      - NODE_OPTIONS=--openssl-legacy-provider npm run build
+      - echo npm run build completed on `date`
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - ls -l ./dist/shop/
 artifacts:
   files:
-    - '**/*'
-  base-directory: dist/shop
+    - ./dist/shop/*
+    - ./dist/shop/assets/*
+    - appspec.yml
