@@ -10,11 +10,10 @@ phases:
 
   build:
     commands:
-      - echo Setting legacy OpenSSL support...
+      - echo Setting legacy OpenSSL provider...
       - export NODE_OPTIONS=--openssl-legacy-provider
-      - echo Building project...
+      - echo Building Angular project...
       - npm run build -- --project=shop
-      - echo Build completed on `date`
 
 artifacts:
   files:
