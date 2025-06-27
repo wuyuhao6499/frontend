@@ -4,21 +4,23 @@ phases:
   install:
     runtime-versions:
       nodejs: 16
+
   pre_build:
     commands:
-      - echo Nothing to do in pre_build...
+      - echo "Nothing to do in pre_build phase..."
+
   build:
     commands:
-      - echo Build started on `date`
+      - echo "Build started on `date`"
       - npm install
-      - npm run build -- --project=shop
-      - echo Build completed on `date`
+      - npm run build
+
   post_build:
     commands:
-      - echo Post build contents:
-      - ls -R dist/shop
+      - echo "Build completed on `date`"
+      - ls -l dist/shop/
 
 artifacts:
   files:
-    - appspec.yml           # ← 根目录下的 appspec.yml
-    - dist/shop/**/*        # ← dist/shop 里的所有文件
+    - appspec.yml
+    - dist/shop/**/*
