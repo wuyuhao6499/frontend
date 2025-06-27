@@ -5,14 +5,12 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo Installing...
+      - echo Installing dependencies...
       - npm install
-      - echo "Enabling legacy OpenSSL provider..."
-      - export NODE_OPTIONS=--openssl-legacy-provider
   build:
     commands:
-      - echo Building Angular App...
-      - ./node_modules/.bin/ng build --project=shop || exit 1
+      - echo Building Angular App with legacy OpenSSL support...
+      - NODE_OPTIONS=--openssl-legacy-provider ./node_modules/.bin/ng build --project=shop || exit 1
       - echo Build completed.
       - ls -al dist/shop || echo "Build failed or output path incorrect!"
 artifacts:
