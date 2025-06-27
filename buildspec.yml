@@ -7,18 +7,15 @@ phases:
     commands:
       - echo Installing dependencies...
       - npm ci
+      - echo "export NODE_OPTIONS=--openssl-legacy-provider" >> ~/.bashrc
+      - export NODE_OPTIONS=--openssl-legacy-provider
 
   pre_build:
     commands:
-      - echo Enabling OpenSSL legacy provider...
-      - export NODE_OPTIONS=--openssl-legacy-provider
-
-  build:
-    commands:
-      - echo Building Angular project...
-      - npm run build -- --project=shop
-      - echo Listing dist/shop contents...
-      - ls -al dist/shop || echo "dist/shop missing!"
+      - echo Compiling Angular app with OpenSSL legacy provider...
+      - echo "NODE_OPTIONS=$NODE_OPTIONS"
+      - ./node_modules/.bin/ng build --project=shop || exit 1
+      - ls -al dist/shop || echo "Build failed: dist/shop not found!"
 
 artifacts:
   files:
