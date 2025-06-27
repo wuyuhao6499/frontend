@@ -1,6 +1,15 @@
-version: 0.0
-os: linux
+version: 0.2
 
-files:
-  - source: .
-    destination: /var/www/html
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+  build:
+    commands:
+      - npm install
+      - npm run build
+      - cp appspec.yml dist/shop/          # ← 关键：把 appspec.yml 拷贝进去
+artifacts:
+  base-directory: dist/shop
+  files:
+    - '**/*'
