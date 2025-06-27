@@ -6,18 +6,11 @@ phases:
       nodejs: 16
   build:
     commands:
-      - echo "Installing..."
       - npm install
-      - echo "Building Angular..."
-      - npm run build            # 产出到 dist/shop
-      - echo "Copying appspec and scripts..."
-      - cp appspec.yml dist/shop/        # 把 appspec.yml 拷进来
-      - cp -r scripts dist/shop/scripts  # 把 scripts 文件夹也拷进来
-  post_build:
-    commands:
-      - echo "Build finished on `date`"
-
+      - npm run build
+      - cp appspec.yml dist/shop/
+      - cp -r scripts dist/shop/scripts    # ⬅️ scripts 目录必须存在！
 artifacts:
-  base-directory: dist/shop     # ← 从这里开始往上打包
+  base-directory: dist/shop
   files:
-    - '**/*'                    # ← 包括所有静态文件 + appspec.yml + scripts 文件夹
+    - '**/*'

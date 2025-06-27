@@ -1,5 +1,0 @@
-.terraform/
-*.exe
-*.zip
-*.tar.gz
-terraform.tfstate*
