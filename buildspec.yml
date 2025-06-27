@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 16
+      nodejs: 16  # ⚠️ 降级 Node.js 版本！Angular 7 推荐使用 Node.js 16
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
@@ -12,7 +12,7 @@ phases:
       - echo Build started on `date`
       - npm install
       - echo npm install completed on `date`
-      # 用 NODE_OPTIONS 强制指定 legacy openssl provider（防止 Angular 7 报错）
+      # 关键：让 legacy OpenSSL 生效（一定要写在同一行）
       - NODE_OPTIONS=--openssl-legacy-provider npm run build
       - echo npm run build completed on `date`
   post_build:
