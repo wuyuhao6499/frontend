@@ -3,19 +3,27 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 16
     commands:
       - echo Installing dependencies...
-      - npm install
+      - npm ci
+
+  pre_build:
+    commands:
+      - echo Nothing to do in pre_build
 
   build:
     commands:
       - echo Build started on `date`
-      - export NODE_OPTIONS=--openssl-legacy-provider
-      - npm run build
-      - echo Build completed on `date`
+      - npm run build -- --project=shop
+      - echo Build finished on `date`
+
+  post_build:
+    commands:
+      - echo Post build actions
+      - ls -alh dist/shop
 
 artifacts:
   files:
     - '**/*'
-  base-directory: dist/shop   # 若 outputPath 不一致，请改成正确路径
+  base-directory: dist/shop
