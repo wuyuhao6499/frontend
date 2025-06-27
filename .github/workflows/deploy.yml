@@ -1,12 +1,26 @@
-name: Deploy to EC2
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-on:
-  push:
-    branches: [main]
+    - name: Setup SSH Key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.KEY }}" > ~/.ssh/deploy_key.pem
+        chmod 600 ~/.ssh/deploy_key.pem
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+    - name: Add EC2 to known_hosts
+      run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to EC2
+      run: |
+        ssh -i ~/.ssh/deploy_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << EOF
+          cd /home/ec2-user
+          git pull origin main
+          npm install
+          npm run build
+          sudo cp -r dist/shop/* /var/www/html/
+        EOF
+".github/workflows/deploy.yml" 32L, 723B                                                              32,11         Bot
 
     steps:
     - name: Checkout Code
@@ -30,3 +44,62 @@ jobs:
           npm run build
           sudo cp -r dist/shop/* /var/www/html/
         EOF
+".github/workflows/deploy.yml" 32L, 723B                                                              32,11         Bot
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup SSH Key
+        echo "${{ secrets.KEY }}" > ~/.ssh/deploy_key.pem
+        chmod 600 ~/.ssh/deploy_key.pem
+      run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to EC2
+      run: |
+          git pull origin main
+          sudo cp -r dist/shop/* /var/www/html/
+        EOF
+".github/workflows/deploy.yml" 32L, 723B                                                              32,11         Bot
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup SSH Key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.KEY }}" > ~/.ssh/deploy_key.pem
+    - name: Add EC2 to known_hosts
+      run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      run: |
+        ssh -i ~/.ssh/deploy_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << EOF
+          cd /home/ec2-user
+          git pull origin main
+          npm install
+          npm run build
+          sudo cp -r dist/shop/* /var/www/html/
+        EOF
+".github/workflows/deploy.yml" 32L, 723B                                                              32,11         Bot
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup SSH Key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.KEY }}F
+      uses: actions/checkout@v3
+
+    - name: Setup SSH Key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.KEY }}F
